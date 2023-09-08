@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('title', 'Add Users')
 
@@ -9,7 +9,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Add Users</h1>
-        <a href="{{route('users.index')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+        <a href="{{route('home')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-arrow-left fa-sm text-white-50"></i> Back</a>
     </div>
 
@@ -74,6 +74,24 @@
                         @enderror
                     </div>
 
+                    {{-- password --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                        <span style="color:red;">*</span>Password</label>
+                        <input 
+                            type="password" 
+                            class="form-control @error('password') is-invalid @enderror" 
+                            id="password"
+                            placeholder="password" 
+                            name="password" 
+                            value="{{ old('password') }}">
+
+                        @error('password')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
+                    </div>
+
+                    
+
                     {{-- Mobile Number --}}
                     <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
                         <span style="color:red;">*</span>Mobile Number</label>
@@ -117,12 +135,26 @@
                         @enderror
                     </div>
 
+                    {{-- Distric --}}
+                    <div class="col-sm-6 mb-3 mt-3 mb-sm-0">
+                        <span style="color:red;">*</span>District</label>
+                        <select class="form-control form-control-user" name="distric">
+                            <option selected disabled>Select District</option>
+                            @foreach($data as $res)
+                            <option value="{{$res->Dest}}">{{$res->Dest}}</option>
+                            @endforeach
+                        </select>
+                        @error('status')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
+                    </div>
+
                 </div>
             </div>
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-success btn-user float-right mb-3">Save</button>
-                <a class="btn btn-primary float-right mr-3 mb-3" href="{{ route('users.index') }}">Cancel</a>
+                <a class="btn btn-primary float-right mr-3 mb-3" href="{{ route('users.create') }}">Cancel</a>
             </div>
         </form>
     </div>

@@ -41,6 +41,20 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    public function register()
+    {
+        return view('auth.register'); 
+    }
+
+    public function register_detail(array $data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *

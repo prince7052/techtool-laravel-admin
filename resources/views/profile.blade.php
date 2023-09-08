@@ -17,7 +17,13 @@
         <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <img class="rounded-circle mt-5" width="150px" src="{{ asset('admin/img/undraw_profile.svg') }}">
+                @if(Auth::user()->profile_image)
+                <img class="rounded-circle mt-5" width="150px" id="blah" src="\uploads\{{Auth::user()->profile_image }}">
+
+                @else
+                <img class="rounded-circle mt-5" width="150px" id="blah" src="{{ asset('admin/img/undraw_profile.svg') }}">
+                @endif
+                    
                     <span class="font-weight-bold">{{ auth()->user()->full_name }}</span>
                     <span class="text-black-50"><i>Role:
                             {{ auth()->user()->roles
@@ -32,7 +38,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Profile</h4>
                     </div>
-                    <form action="{{ route('profile.update') }}" method="POST">
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" >
                         @csrf
                         <div class="row mt-2">
                             <div class="col-md-4">
@@ -64,6 +70,16 @@
                                 @error('mobile_number')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
+                            </div>
+                              <br><br>
+                            <div class="col-md-4">
+                                <label class="labels">Change Profile</label>
+                                <input type="file" class="form-control " name="file" id="imgInp"
+                                    value="{{ old('mobile_number') ? old('mobile_number') : auth()->user()->mobile_number }}"
+                                    placeholder="Mobile Number">
+
+                                    <input type="hidden" value="{{Auth::user()->profile_image }}" name="img_hidden">
+                               
                             </div>
                         </div>
                         <div class="mt-5 text-center">
@@ -117,3 +133,14 @@
 
     </div>
 @endsection
+
+
+<script>
+
+imgInp.onchange = evt => {
+  const [file] = imgInp.files
+  if (file) {
+    blah.src = URL.createObjectURL(file)
+  }
+}
+</script>

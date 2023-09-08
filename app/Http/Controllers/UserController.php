@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\File_data;
+use App\Models\Dropdown_tbl;
+
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
@@ -24,8 +27,8 @@ class UserController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index']]);
-        $this->middleware('permission:user-create', ['only' => ['create','store', 'updateStatus']]);
-        $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:user-create', ['only' => ['create', 'store', 'updateStatus']]);
+        $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:user-delete', ['only' => ['delete']]);
     }
 
@@ -41,7 +44,87 @@ class UserController extends Controller
         $users = User::with('roles')->paginate(10);
         return view('users.index', ['users' => $users]);
     }
-    
+
+    public function dropdown_manage()
+    {
+        //  $users = User::with('roles')->paginate(10);
+        $data = Dropdown_tbl::all();
+
+        return view('users.dropdown-manage',['data'=>$data]);
+    }
+
+
+    public function option_store(Request $request)
+    {
+
+        Dropdown_tbl::truncate(); 
+        $names = $request->get('name');
+        $uid = auth()->user()->id;
+
+       // print_r($names);
+       // dd('====');
+        $max = count($names);
+       for ($x = 0; $x < $max; $x++) {
+        if( $names[$x] != ""){
+
+        Dropdown_tbl :: create([
+            'user_id' => $uid,
+            'option' => $names[$x]
+       
+        ]);
+    }
+
+        }
+        return redirect()->route('users.dropdown-manage')->with('success', ' Added data Successfully.');
+
+    }
+
+
+    public function delete_option($id)
+    {
+      
+            // Delete User
+            Dropdown_tbl::where('id',$id)->delete(); 
+
+           return redirect()->route('users.dropdown-manage')->with('success', ' Deleted data Successfully.');
+        
+    }
+
+    public function remark_list()
+    {
+        $users = User::where('remark_status', 1)->with('roles')->paginate(10);
+        // $users2 = User::where('remark_status',1)->get();
+
+        foreach ($users as  $users1) {
+            $data1[] = $users1->full_name;
+            $data2[] = $users1->email;
+            $data3[] = $users1->mobile_number;
+            $data4[] = $users1->distric;
+            $data5[] = File_data::where('Dest', $users1->distric)->where('status', 1)->count();
+            $data6[] = File_data::where('Dest', $users1->distric)->where('status', 0)->count();
+        }
+        return view('users.remark_list', ['data1' => $data1, 'data2' => $data2, 'data3' => $data3, 'data4' => $data4, 'data5' => $data5, 'data6' => $data6]);
+    }
+
+
+    public function user_remark_list($distt)
+    {
+        $dist = $distt;
+        $data = File_data::select('*')->where('Dest', $dist)->first();
+        $users = File_data::where('Dest', $dist)->where('status', 1)->with('roles')->paginate(10);
+
+        return view('users.user-remark-list', ['users' => $users, 'data' => $data]);
+    }
+
+    public function pending_remark_list($distt)
+    {
+        $dist = $distt;
+        $data = File_data::select('*')->where('Dest', $dist)->first();
+        $users = File_data::where('Dest', $dist)->where('status', 0)->with('roles')->paginate(10);
+
+        return view('users.pending-remark-list', ['users' => $users, 'data' => $data]);
+    }
+
     /**
      * Create User 
      * @param Nill
@@ -51,8 +134,9 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-       
-        return view('users.add', ['roles' => $roles]);
+        $data = File_data::all();
+
+        return view('users.add', ['roles' => $roles, 'data' => $data]);
     }
 
     /**
@@ -64,6 +148,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Validations
+       // print_r('<pre>');
+       // print_r($request);
+
+      //  dd('==========');
         $request->validate([
             'first_name'    => 'required',
             'last_name'     => 'required',
@@ -84,19 +172,19 @@ class UserController extends Controller
                 'mobile_number' => $request->mobile_number,
                 'role_id'       => $request->role_id,
                 'status'        => $request->status,
-                'password'      => Hash::make($request->first_name.'@'.$request->mobile_number)
+                'distric'       => $request->distric,
+                'password'      => Hash::make($request->password)
             ]);
 
             // Delete Any Existing Role
-            DB::table('model_has_roles')->where('model_id',$user->id)->delete();
-            
+            DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+
             // Assign Role To User
             $user->assignRole($user->role_id);
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('users.index')->with('success','User Created Successfully.');
-
+            return redirect()->route('users.index')->with('success', 'User Created Successfully.');
         } catch (\Throwable $th) {
             // Rollback and return with Error
             DB::rollBack();
@@ -122,7 +210,7 @@ class UserController extends Controller
         ]);
 
         // If Validations Fails
-        if($validate->fails()){
+        if ($validate->fails()) {
             return redirect()->route('users.index')->with('error', $validate->errors()->first());
         }
 
@@ -134,7 +222,7 @@ class UserController extends Controller
 
             // Commit And Redirect on index with Success Message
             DB::commit();
-            return redirect()->route('users.index')->with('success','User Status Updated Successfully!');
+            return redirect()->route('users.index')->with('success', 'User Status Updated Successfully!');
         } catch (\Throwable $th) {
 
             // Rollback & Return Error Message
@@ -152,9 +240,11 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
+        $data = File_data::all();
         return view('users.edit')->with([
             'roles' => $roles,
-            'user'  => $user
+            'user'  => $user,
+            'data'  => $data
         ]);
     }
 
@@ -170,7 +260,7 @@ class UserController extends Controller
         $request->validate([
             'first_name'    => 'required',
             'last_name'     => 'required',
-            'email'         => 'required|unique:users,email,'.$user->id.',id',
+            'email'         => 'required|unique:users,email,' . $user->id . ',id',
             'mobile_number' => 'required|numeric|digits:10',
             'role_id'       =>  'required|exists:roles,id',
             'status'       =>  'required|numeric|in:0,1',
@@ -187,18 +277,18 @@ class UserController extends Controller
                 'mobile_number' => $request->mobile_number,
                 'role_id'       => $request->role_id,
                 'status'        => $request->status,
+                'distric'        => $request->distric,
             ]);
 
             // Delete Any Existing Role
-            DB::table('model_has_roles')->where('model_id',$user->id)->delete();
-            
+            DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+
             // Assign Role To User
             $user->assignRole($user->role_id);
 
             // Commit And Redirected To Listing
             DB::commit();
-            return redirect()->route('users.index')->with('success','User Updated Successfully.');
-
+            return redirect()->route('users.index')->with('success', 'User Updated Successfully.');
         } catch (\Throwable $th) {
             // Rollback and return with Error
             DB::rollBack();
@@ -221,7 +311,6 @@ class UserController extends Controller
 
             DB::commit();
             return redirect()->route('users.index')->with('success', 'User Deleted Successfully!.');
-
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
@@ -241,13 +330,12 @@ class UserController extends Controller
     public function uploadUsers(Request $request)
     {
         Excel::import(new UsersImport, $request->file);
-        
+
         return redirect()->route('users.index')->with('success', 'User Imported Successfully');
     }
 
-    public function export() 
+    public function export()
     {
         return Excel::download(new UsersExport, 'users.xlsx');
     }
-
 }

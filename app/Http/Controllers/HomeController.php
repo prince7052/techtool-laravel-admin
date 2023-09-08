@@ -39,7 +39,23 @@ class HomeController extends Controller
      */
     public function getProfile()
     {
-        return view('profile');
+        if( auth()->user()->role_id == 1){ 
+            return view('admin.profile');
+        }else{
+            return view('user.profile');
+        }
+      
+    }
+
+
+    public function getProfile_admin()
+    {
+        return view('admin.profile');
+    }
+
+    public function getProfile_user()
+    {
+        return view('user.profile');
     }
 
     /**
@@ -61,16 +77,29 @@ class HomeController extends Controller
             DB::beginTransaction();
             
             #Update Profile Data
+            if($request->file){
+            $fileName = time().'.'.$request->file->extension();  
+     
+            $request->file->move(public_path('uploads'), $fileName); 
+
+            }else{
+                $fileName = $request->img_hidden;
+            }
+
             User::whereId(auth()->user()->id)->update([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'mobile_number' => $request->mobile_number,
+                'profile_image' => $fileName,
             ]);
 
             #Commit Transaction
             DB::commit();
 
             #Return To Profile page with success
+
+            
+
             return back()->with('success', 'Profile Updated Successfully.');
             
         } catch (\Throwable $th) {

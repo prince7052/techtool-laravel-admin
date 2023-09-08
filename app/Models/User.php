@@ -15,6 +15,7 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
@@ -26,6 +27,8 @@ class User extends Authenticatable
         'role_id',
         'status',
         'password',
+        'distric', 
+        'profile_image', 
     ];
 
     /**

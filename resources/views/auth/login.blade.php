@@ -6,7 +6,7 @@
 <div class="row justify-content-center">
 
     <div class="text-center mt-5">
-        <h1 class="text-white">Tech-Admin - Laravel Admin Panel</h1>
+        <h1 class="text-white">Tech-Login- Laravel System Panel</h1>
     </div>
 
     <div class="col-xl-10 col-lg-12 col-md-9">
@@ -17,32 +17,33 @@
                     <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                     <div class="col-lg-6">
                         <div class="p-5">
+                       
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                             </div>
 
                             @if (session('error'))
-                                <span class="text-danger"> {{ session('error') }}</span>
+                            <span class="text-danger"> {{ session('error') }}</span>
                             @endif
 
-                            <form method="POST" action="{{ route('login') }}">
+                            <form method="POST" action="{{ route('check') }}">
                                 @csrf
                                 <div class="form-group">
                                     <input id="email" type="email" class="form-control form-control-user @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Enter Email Address.">
 
-                                        @error('email')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                    @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <input id="password" type="password" class="form-control form-control-user @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
 
                                     @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
                                     @enderror
                                 </div>
                                 <div class="form-group">
@@ -61,13 +62,20 @@
                             <div class="text-center">
                                 <a class="small" href="{{route('password.request')}}">Forgot Password?</a>
                             </div>
+
+                            <p class="text-center">
+                                <span>New on our platform?</span>
+                                <a href="{{route('register')}}">
+                                    <span>Create an account</span>
+                                </a>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="text-center mt-5">
         <h6 class="text-white">Developed By : <a class="text-white" href="https://techtoolindia.com">TechTool India</a></h6>
     </div>
