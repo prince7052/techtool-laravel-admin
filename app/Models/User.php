@@ -29,6 +29,8 @@ class User extends Authenticatable
         'password',
         'distric', 
         'profile_image', 
+        'InstanceID', 
+        'AccessToken', 
     ];
 
     /**

@@ -77,6 +77,7 @@
                             name="message" 
                             value=""></textarea>
                             <span  id="show_msg" style="display:none">&#x2705; Messages has been send successfull !</span>
+                            <span  id="show_msgErr" style="display:none;color:red"> Message has not been send  !</span>
                             <br>
                             <a class="btn btn-success float-right mr-3 mb-3" id="send_msg" >Send</a>
                            
@@ -147,8 +148,12 @@ return true;
                 success: function(response)
                 {
                   // alert(response);
+                  if(response == 1){
                   $('#message_id').val('');
                   $('#show_msg').show().fadeOut(2000); 
+                  }else{
+                    $('#show_msgErr').show(); 
+                  }
                 }
             }); 
        });

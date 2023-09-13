@@ -53,6 +53,33 @@ class UserController extends Controller
         return view('users.dropdown-manage',['data'=>$data]);
     }
 
+    public function posts_users(Request $request)
+    {
+        $data = User::select('*')->where('id',$request->id)->first();   
+       
+
+        return view('users.whatsapp-single-token', ['user' => $data]);
+    }
+
+    public function whatsapp_token()
+    {
+        $data = User::where('role_id',2)->get();
+
+        return view('users.whatsapp-token', ['data' => $data]);
+    }
+
+    public function update_token(Request $request)
+    {
+       $id =  $request->id;
+       $user_updated = User::whereId($id)->update([
+        'InstanceID'        => $request->InstanceID,
+        'AccessToken'        => $request->AccessToken,
+    ]);
+       
+
+    return redirect()->route('users.whatsapp-token')->with('success', ' Updated data Successfully.');
+    }
+
 
     public function option_store(Request $request)
     {

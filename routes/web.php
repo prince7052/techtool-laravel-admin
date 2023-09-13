@@ -70,6 +70,8 @@ Route::middleware('auth')->prefix('users')->name('users.')->group(function(){
     Route::get('/remark-list', [UserController::class, 'remark_list'])->name('remark-list');
     Route::get('/dropdown-manage', [UserController::class, 'dropdown_manage'])->name('dropdown-manage');
     Route::post('/option-store', [UserController::class, 'option_store'])->name('option-store');
+    Route::post('/posts-users', [UserController::class, 'posts_users'])->name('posts-users');
+    Route::post('/update-token', [UserController::class, 'update_token'])->name('update-token');
     Route::get('/user_remark_list/{dist}', [UserController::class, 'user_remark_list'])->name('user_remark_list');
     Route::get('/pending_remark_list/{dist}', [UserController::class, 'pending_remark_list'])->name('pending_remark_list');
     Route::post('/store', [UserController::class, 'store'])->name('store');
@@ -78,6 +80,8 @@ Route::middleware('auth')->prefix('users')->name('users.')->group(function(){
     Route::delete('/delete/{user}', [UserController::class, 'delete'])->name('destroy');
     Route::get('/delete-option/{id}', [UserController::class, 'delete_option'])->name('delete-option'); 
     Route::get('/update/status/{user_id}/{status}', [UserController::class, 'updateStatus'])->name('status');
+    Route::get('/whatsapp-token', [UserController::class, 'whatsapp_token'])->name('whatsapp-token');
+
 
 
     

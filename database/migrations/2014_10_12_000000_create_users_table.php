@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('mobile_number')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('distric')->nullable();
+            $table->string('InstanceID')->nullable();
+            $table->string('AccessToken')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('role_id')->default(2)->comment('1=Admin, 2=TA/TP');
