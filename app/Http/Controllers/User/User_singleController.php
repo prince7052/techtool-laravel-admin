@@ -87,7 +87,7 @@ class User_singleController extends Controller
     {
       $dist = auth()->user()->distric;
       $data = File_data::select('*')->where('Dest', $dist)->first();
-      $users = File_data::select('*')->where('Dest', $dist)->where('status', 1)->get();
+      $users = File_data::select('*')->where('Dest', $dist)->where('status', 1)->paginate(10);
       return view('user.complete-remark', ['users' => $users,'data' => $data]); 
       
     }
@@ -96,7 +96,7 @@ class User_singleController extends Controller
     {
       $dist = auth()->user()->distric;
       $data = File_data::select('*')->where('Dest', $dist)->first();
-      $users = File_data::select('*')->where('Dest', $dist)->where('status', 0)->get();
+      $users = File_data::select('*')->where('Dest', $dist)->where('status', 0)->paginate(10);
       return view('user.pending-remark', ['users' => $users,'data' => $data]); 
       
     }

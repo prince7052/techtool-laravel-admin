@@ -7,8 +7,11 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Users</h1>
-         
+            <h1 class="h3 mb-0 text-gray-800">Pending Records</h1>
+            <div class="row">
+               
+                
+            </div>
 
         </div>
 
@@ -18,7 +21,7 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">All Users</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Data</h6>
 
             </div>
             <div class="card-body">
@@ -26,7 +29,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th width="15%">Dest</th>
+                            <th width="15%">Dest</th>
                                 <th width="10%">SN</th>
                                 <th width="15%">KIOSK NAME</th>
                                 <th width="15%">OWNER NAME</th>
@@ -39,13 +42,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
-                            @if($data)
+                        @if($data)
                            
                             @foreach ($users as $user)
                             
                                 <tr>
-                                    <td>{{ $user->Dest }}</td>
+                                <td>{{ $user->Dest }}</td>
                                     <td>{{ $user->SN }}</td>
                                     <td>{{ $user->KIOSK_NAME }}</td>
                                     <td>{{ $user->OWNER_NAME }}</td>
@@ -63,27 +65,25 @@
 
                                     </td>
                                     <td>{{ $user->updated_at}}</td>
-                              
                                 </tr>
                             @endforeach
                             @else
-                           
                              <tr>
-                            <td colspan="9" style="text-align: center;" ><h4>No Record Found</h4></td>
+                             <td colspan="7" style="text-align: center;" ><h4>No Record Found</h4></td>
 
                              </tr>
                             @endif
                         </tbody>
                     </table>
 
-                  
+                    {{ $users->links() }}
                 </div>
             </div>
         </div>
 
     </div>
 
-  
+   
 
 @endsection
 

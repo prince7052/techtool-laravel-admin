@@ -130,7 +130,7 @@ class UserController extends Controller
             $data5[] = File_data::where('Dest', $users1->distric)->where('status', 1)->count();
             $data6[] = File_data::where('Dest', $users1->distric)->where('status', 0)->count();
         }
-        return view('users.remark_list', ['data1' => $data1, 'data2' => $data2, 'data3' => $data3, 'data4' => $data4, 'data5' => $data5, 'data6' => $data6]);
+        return view('users.remark_list', ['data1' => $data1, 'data2' => $data2, 'data3' => $data3, 'data4' => $data4, 'data5' => $data5, 'data6' => $data6,'users' => $users]);
     }
 
 
