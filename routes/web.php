@@ -77,7 +77,7 @@ Route::middleware('auth')->prefix('users')->name('users.')->group(function(){
     Route::post('/store', [UserController::class, 'store'])->name('store');
     Route::get('/edit/{user}', [UserController::class, 'edit'])->name('edit');
     Route::put('/update/{user}', [UserController::class, 'update'])->name('update');
-    Route::delete('/delete/{user}', [UserController::class, 'delete'])->name('destroy');
+    Route::get('/delete/{user}', [UserController::class, 'delete'])->name('destroy');
     Route::get('/delete-option/{id}', [UserController::class, 'delete_option'])->name('delete-option'); 
     Route::get('/update/status/{user_id}/{status}', [UserController::class, 'updateStatus'])->name('status');
     Route::get('/whatsapp-token', [UserController::class, 'whatsapp_token'])->name('whatsapp-token');
@@ -87,8 +87,14 @@ Route::middleware('auth')->prefix('users')->name('users.')->group(function(){
     
     Route::get('/import-users', [UserController::class, 'importUsers'])->name('import');
     Route::post('/upload-users', [DataimpexpController::class, 'uploadUsers'])->name('upload');
+    Route::get('/download-data/{id}', [DataimpexpController::class, 'export'])->name('download-data');
+    Route::get('/record-export/{id}/{sdt}/{edt}', [DataimpexpController::class, 'record_export'])->name('record-export');
+    Route::get('/agent-details/{id}', [UserController::class, 'agent_details'])->name('agent-details');
+    Route::get('/report', [UserController::class, 'left_report'])->name('report');
+    Route::post('/add-record', [UserController::class, 'add_record'])->name('add-record');
+    Route::post('/show-record', [UserController::class, 'show_record'])->name('show-record');
 
-    Route::get('export/', [UserController::class, 'export'])->name('export');
+    //Route::get('export/', [UserController::class, 'export'])->name('export');
 
 });
 

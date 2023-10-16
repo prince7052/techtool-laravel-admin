@@ -45,8 +45,17 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <!-- Logout Modal-->
     @include('common.logout-modal')
+
+    @include('common.upload-data-modal')
+
+
+   
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('js/app.js')}}"></script>
@@ -54,6 +63,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('admin/js/sb-admin-2.min.js')}}"></script>
+   
+    <script src="{{asset('admin/js/home-admin.js')}}"></script>
 
     @yield('scripts')
 </body>

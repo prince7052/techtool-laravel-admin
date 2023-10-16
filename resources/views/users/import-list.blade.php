@@ -15,9 +15,7 @@
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <a href="{{ route('users.export') }}" class="btn btn-sm btn-success">
-                        <i class="fas fa-check"></i> Export To Excel
-                    </a>
+                  
                 </div>
                 
             </div>

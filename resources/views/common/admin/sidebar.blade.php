@@ -22,13 +22,34 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
+
+    <!-- Nav Item - Agents -->
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ route('users.index') }}">
+            <i class="fas fa-user-alt"></i>
+            <span>Agents</span></a>
+    </li>
+
+    <!-- Agents -->
+    <hr class="sidebar-divider">
+
+
+     <!-- Nav Item - Agents -->
+     <li class="nav-item active">
+        <a class="nav-link" href="{{ route('users.report') }}">
+            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+            <span>Left Reports</span></a>
+    </li>
+
+    <!-- Agents -->
+    <hr class="sidebar-divider">
     <!-- Heading -->
-    <div class="sidebar-heading">
+    <!--<div class="sidebar-heading">
         Management
-    </div>
+    </div>-->
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+   <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#taTpDropDown"
             aria-expanded="true" aria-controls="taTpDropDown">
             <i class="fas fa-user-alt"></i>
@@ -45,19 +66,19 @@
 
             </div>
         </div>
-    </li>
+    </li>-->
 
     <!-- Divider -->
-    <hr class="sidebar-divider">
+   <!-- <hr class="sidebar-divider">-->
 
     @hasrole('Admin')
         <!-- Heading -->
-        <div class="sidebar-heading">
+       <!-- <div class="sidebar-heading">
             Admin Section
-        </div>
+        </div>-->
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
+       <!-- <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                 aria-expanded="true" aria-controls="collapsePages">
                 <i class="fas fa-fw fa-folder"></i>
@@ -73,19 +94,19 @@
                     <a class="collapse-item" href="{{ route('media.mail') }}">Mail</a>
                 </div>
             </div>
-        </li>
+        </li>-->
 
 
         <!-- Divider -->
-    <hr class="sidebar-divider">
+   <!-- <hr class="sidebar-divider">-->
 
 <!-- Heading -->
-<div class="sidebar-heading">
+<!--<div class="sidebar-heading">
     Management Section
-</div>
+</div>-->
 
 <!-- Nav Item - Pages Collapse Menu -->
-<li class="nav-item">
+<!--<li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#taTpDropDown_1"
         aria-expanded="true" aria-controls="taTpDropDown">
         <i class="fas fa-user-alt"></i>
@@ -101,10 +122,10 @@
 
         </div>
     </div>
-</li>
+</li>-->
 
         <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
+        <!--<hr class="sidebar-divider d-none d-md-block">-->
     @endhasrole
 
     <li class="nav-item">

@@ -40,12 +40,14 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) 
         {
            // return view('home');
-           if(Auth::user()->role_id == 1){
+          /* if(Auth::user()->role_id == 1){
             return $this->admin_dashboard();
           }
           else{
             return $this->user_dashboard();
-          }
+          }*/
+
+          return redirect()->route('home');  
 
          }
          // return "<h2>Username or Password Invalid!</h2>";  

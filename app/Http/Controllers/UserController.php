@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\File_data;
 use App\Models\Dropdown_tbl;
+use App\Models\Import_data;
 
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -41,8 +44,55 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->paginate(10);
-        return view('users.index', ['users' => $users]);
+
+
+        $count1 = Import_data::count();
+
+        $currentDate = Carbon::now()->toDateString();
+
+        $count2 = Import_data::where('update_date', $currentDate)->where('status', 1)->count();
+
+
+        $count4 = Import_data::where('update_date', $currentDate)->where('follow_up', 1)->count();
+
+
+        session::put('count1', $count1);
+        session::put('count2', $count2);
+        session::put('count4', $count4);
+
+        $data = User::all();
+
+
+        foreach ($data as $datas) {
+
+            $id[] = $datas->id;
+            $first_name[] = $datas->first_name;
+            $last_name[] = $datas->last_name;
+            $email[] = $datas->email;
+            $mobile_number[] = $datas->mobile_number;
+            $status[] = $datas->status;
+            $role_id[] = $datas->role_id;
+            $passcode[] = $datas->passcode;
+
+            $count[] = Import_data::select('*')->where('agent_id', $datas->id)->count();
+
+
+
+            $remaining[] = Import_data::select('*')->where('agent_id', $datas->id)->where('status', 0)->count();
+
+            $calling[] = Import_data::select('*')->where('agent_id', $datas->id)->where('status', 1)->count();
+
+            $follow_up[] = Import_data::select('*')->where('agent_id', $datas->id)->where('follow_up', 1)->count();
+        }
+
+
+
+        //  $users = User::with('roles')->paginate(10);
+        return view('users.index', ['id' => $id, 'first_name' => $first_name, 'last_name' => $last_name, 'email' => $email, 'mobile_number' => $mobile_number, 'status' => $status, 'role_id' => $role_id, 'count' => $count, 'remaining' => $remaining, 'calling' => $calling, 'follow_up' => $follow_up, 'passcode' => $passcode]);
+
+        // return $data;
+
+        //return view('users.index',['users'=>$data]);
     }
 
     public function dropdown_manage()
@@ -50,71 +100,68 @@ class UserController extends Controller
         //  $users = User::with('roles')->paginate(10);
         $data = Dropdown_tbl::all();
 
-        return view('users.dropdown-manage',['data'=>$data]);
+        return view('users.dropdown-manage', ['data' => $data]);
     }
 
     public function posts_users(Request $request)
     {
-        $data = User::select('*')->where('id',$request->id)->first();   
-       
+        $data = User::select('*')->where('id', $request->id)->first();
+
 
         return view('users.whatsapp-single-token', ['user' => $data]);
     }
 
     public function whatsapp_token()
     {
-        $data = User::where('role_id',2)->get();
+        $data = User::where('role_id', 2)->get();
 
         return view('users.whatsapp-token', ['data' => $data]);
     }
 
     public function update_token(Request $request)
     {
-       $id =  $request->id;
-       $user_updated = User::whereId($id)->update([
-        'InstanceID'        => $request->InstanceID,
-        'AccessToken'        => $request->AccessToken,
-    ]);
-       
+        $id =  $request->id;
+        $user_updated = User::whereId($id)->update([
+            'InstanceID'        => $request->InstanceID,
+            'AccessToken'        => $request->AccessToken,
+        ]);
 
-    return redirect()->route('users.whatsapp-token')->with('success', ' Updated data Successfully.');
+
+        return redirect()->route('users.whatsapp-token')->with('success', ' Updated data Successfully.');
     }
 
 
     public function option_store(Request $request)
     {
 
-        Dropdown_tbl::truncate(); 
+        Dropdown_tbl::truncate();
         $names = $request->get('name');
         $uid = auth()->user()->id;
 
-       // print_r($names);
-       // dd('====');
+        // print_r($names);
+        // dd('====');
         $max = count($names);
-       for ($x = 0; $x < $max; $x++) {
-        if( $names[$x] != ""){
+        for ($x = 0; $x < $max; $x++) {
+            if ($names[$x] != "") {
 
-        Dropdown_tbl :: create([
-            'user_id' => $uid,
-            'option' => $names[$x]
-       
-        ]);
-    }
+                Dropdown_tbl::create([
+                    'user_id' => $uid,
+                    'option' => $names[$x]
 
+                ]);
+            }
         }
         return redirect()->route('users.dropdown-manage')->with('success', ' Added data Successfully.');
-
     }
 
 
     public function delete_option($id)
     {
-      
-            // Delete User
-            Dropdown_tbl::where('id',$id)->delete(); 
 
-           return redirect()->route('users.dropdown-manage')->with('success', ' Deleted data Successfully.');
-        
+        // Delete User
+        Dropdown_tbl::where('id', $id)->delete();
+
+        return redirect()->route('users.dropdown-manage')->with('success', ' Deleted data Successfully.');
     }
 
     public function remark_list()
@@ -130,7 +177,7 @@ class UserController extends Controller
             $data5[] = File_data::where('Dest', $users1->distric)->where('status', 1)->count();
             $data6[] = File_data::where('Dest', $users1->distric)->where('status', 0)->count();
         }
-        return view('users.remark_list', ['data1' => $data1, 'data2' => $data2, 'data3' => $data3, 'data4' => $data4, 'data5' => $data5, 'data6' => $data6,'users' => $users]);
+        return view('users.remark_list', ['data1' => $data1, 'data2' => $data2, 'data3' => $data3, 'data4' => $data4, 'data5' => $data5, 'data6' => $data6, 'users' => $users]);
     }
 
 
@@ -175,10 +222,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Validations
-       // print_r('<pre>');
-       // print_r($request);
+        // print_r('<pre>');
+        // print_r($request);
 
-      //  dd('==========');
+        //  dd('==========');
         $request->validate([
             'first_name'    => 'required',
             'last_name'     => 'required',
@@ -193,9 +240,11 @@ class UserController extends Controller
 
             // Store Data
             $user = User::create([
+                'name'    => $request->first_name . ' ' . $request->last_name,
                 'first_name'    => $request->first_name,
                 'last_name'     => $request->last_name,
                 'email'         => $request->email,
+                'passcode'      => $request->password,
                 'mobile_number' => $request->mobile_number,
                 'role_id'       => $request->role_id,
                 'status'        => $request->status,
@@ -361,8 +410,75 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User Imported Successfully');
     }
 
-    public function export()
+
+    public function agent_details($id)
     {
-        return Excel::download(new UsersExport, 'users.xlsx');
+
+        $data = Import_data::where('agent_id', $id)->count();
+        $users = Import_data::where('agent_id', $id)->paginate(10);
+
+        return view('users.agent-details', ['users' => $users, 'data' => $data]);
+    }
+
+    public function left_report()
+    {
+
+        $data = Import_data::where('agent_id', 'all')->count();
+        $users = Import_data::where('agent_id', 'all')->paginate(10);
+        $data1 = User::where('status', 1)->get();
+
+
+        return view('users.report', ['users' => $users, 'data' => $data, 'data1' => $data1]);
+    }
+
+
+    public function add_record(Request $request)
+    {
+        $limit = $request->limits;
+        $agent_id = $request->agent;
+        Import_data::where('agent_id', 'all')->take($limit)->update(['agent_id' => $agent_id]);
+
+        return redirect()->route('users.report')->with('success', 'Record Added Successfully');
+    }
+
+    public function show_record(Request $request)
+    {
+        $count1 = Import_data::count();
+
+        $currentDate = Carbon::now()->toDateString();
+
+       
+
+        $count2 = Import_data::where('update_date', $currentDate)->where('status', 1)->count();
+
+
+        $count4 = Import_data::where('follow_up', 1)->count();
+
+        if($count4){
+            $count4= $count4;
+        }else{
+            $count4 =0;
+        }
+
+        
+        session::put('count1', $count1);
+        session::put('count2', $count2);
+        session::put('count4', $count4);
+        $data1 = User::where('status',1)->get();
+
+        $startDate = $request->from_date;
+        $endDate = $request->to_date;
+        $agent = $request->agent;
+
+        if ($request->agent == 'all') {
+
+            $data = Import_data::count();
+            $users = Import_data::whereBetween('update_date', [$startDate, $endDate])->get();
+        } else {
+            $data = Import_data::count();
+            $users = Import_data::whereBetween('update_date', [$startDate, $endDate])->where('agent_id',$request->agent)->get();
+        }
+
+        return view('admin.home', ['count1' => $count1, 'count2' => $count2, 'count4' => $count4,'data1'=>$data1,'users' => $users, 'data' => $data,'startDate'=>$startDate,'endDate'=>$endDate,'agent'=>$agent]);
     }
 }
